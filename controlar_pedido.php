@@ -1,7 +1,6 @@
 <?php
 require 'db.php';
 
-// --- LÓGICA DE PROCESSAMENTO (AJAX POST) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $response = ['success' => true, 'message' => ''];
     $cod_cliente = $_POST['cod_cliente'] ?? '';
@@ -39,7 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-// --- LÓGICA DE EXIBIÇÃO (GET para carregar o form) ---
 $is_form_only = isset($_GET['form_only']);
 $num_pedido = $_GET['num_pedido'] ?? null;
 $cod_cliente = '';
