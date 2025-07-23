@@ -12,7 +12,7 @@ require 'templates/header.php';
         </div>
 
         <table id="dg_itens" class="easyui-datagrid" style="width:100%; height:400px"
-               data-options="url:'listar_itens_json.php', method:'post', pagination:true, fitColumns:true, singleSelect:true, pageSize:10, pageList:[10,20,50],
+            data-options="url:'listar_itens_json.php', method:'post', pagination:true, fitColumns:true, singleSelect:true, pageSize:10, pageList:[10,20,50],
                onLoadSuccess: function() { $('.easyui-linkbutton').linkbutton(); }">
             <thead>
                 <tr>
@@ -25,10 +25,8 @@ require 'templates/header.php';
     </div>
 </div>
 
-<!-- DIALOG E LÓGICA AJAX PARA ITENS -->
 <div id="dlg-item" class="easyui-dialog" style="width:550px; padding: 10px 20px;"
-        closed="true" modal="true" buttons="#dlg-item-buttons">
-    <!-- O formulário do item será carregado aqui -->
+    closed="true" modal="true" buttons="#dlg-item-buttons">
 </div>
 <div id="dlg-item-buttons">
     <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="salvarItem()" style="width:90px">Salvar</a>
@@ -64,7 +62,10 @@ require 'templates/header.php';
                 if (result.success) {
                     $('#dlg-item').dialog('close');
                     $('#dg_itens').datagrid('reload');
-                    $.messager.show({ title: 'Sucesso', msg: 'Item salvo com sucesso.' });
+                    $.messager.show({
+                        title: 'Sucesso',
+                        msg: 'Item salvo com sucesso.'
+                    });
                 } else {
                     $.messager.alert('Erro', result.message, 'error');
                 }
@@ -81,12 +82,17 @@ require 'templates/header.php';
                 $.ajax({
                     url: 'excluir_item.php',
                     type: 'post',
-                    data: { cod_item: cod_item },
+                    data: {
+                        cod_item: cod_item
+                    },
                     dataType: 'json',
                     success: function(result) {
                         if (result.success) {
                             $('#dg_itens').datagrid('reload');
-                            $.messager.show({ title: 'Sucesso', msg: result.message });
+                            $.messager.show({
+                                title: 'Sucesso',
+                                msg: result.message
+                            });
                         } else {
                             $.messager.alert('Erro na Exclusão', result.message, 'error');
                         }
