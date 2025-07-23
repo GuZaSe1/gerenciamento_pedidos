@@ -1,9 +1,7 @@
 <?php
 require 'db.php';
 
-// --- LÓGICA DE PROCESSAMENTO (QUANDO O FORMULÁRIO É ENVIADO VIA AJAX) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Prepara a resposta JSON. Começa como sucesso, muda se algo der errado.
     $response = ['success' => true, 'message' => ''];
 
     $cod_cliente_post = $_POST['cod_cliente'] ?: null;
@@ -31,14 +29,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Define o cabeçalho como JSON e imprime a resposta.
+    // Define o cabeçalho como JSON e imprime a resposta
     header('Content-Type: application/json');
     echo json_encode($response);
-    exit; // Encerra o script aqui. O HTML abaixo não será executado.
+    exit;
 }
-
-
-// --- LÓGICA DE EXIBIÇÃO (QUANDO O FORMULÁRIO É CARREGADO NO DIALOG) ---
 
 // Verifica se é para renderizar apenas o formulário ou a página inteira
 $is_form_only = isset($_GET['form_only']);
@@ -65,7 +60,6 @@ if (!$is_form_only) {
 }
 ?>
 
-<!-- O formulário agora tem um ID para ser facilmente encontrado pelo JavaScript -->
 <form id="fm-cliente" method="post">
     <input type="hidden" name="cod_cliente" value="<?= htmlspecialchars($cod_cliente_get ?? '') ?>">
     <div style="margin-bottom:20px; padding-top: 10px;">
