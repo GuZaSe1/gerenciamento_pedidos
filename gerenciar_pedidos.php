@@ -21,13 +21,13 @@ require 'templates/header.php';
 
 <div id="dlg-pedido" class="easyui-dialog" style="width:550px; padding: 10px 20px;" closed="true" modal="true" buttons="#dlg-pedido-buttons"></div>
 <div id="dlg-pedido-buttons">
-    <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="salvarPedido()" style="width:90px">Salvar</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-save" onclick="salvarPedido()" style="width:90px">Salvar</a>
     <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg-pedido').dialog('close')" style="width:90px">Cancelar</a>
 </div>
 
 <div id="dlg-item-pedido" class="easyui-dialog" style="width:550px; padding: 10px 20px;" closed="true" modal="true" buttons="#dlg-item-pedido-buttons"></div>
 <div id="dlg-item-pedido-buttons">
-    <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="salvarItemPedido()" style="width:90px">Salvar</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-save" onclick="salvarItemPedido()" style="width:90px">Salvar</a>
     <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg-item-pedido').dialog('close')" style="width:90px">Cancelar</a>
 </div>
 
@@ -94,6 +94,11 @@ require 'templates/header.php';
                             // Renderiza os botões de ação (modificar/excluir) dos itens
                             ddv.datagrid('getPanel').find('.easyui-linkbutton').linkbutton();
                         }, 0);
+                    },
+                    rowStyler: function(index, row){
+                        if (index % 2 == 1){
+                            return 'background-color:rgb(243, 243, 243);';
+                        }
                     }
                 });
                 $('#dg_pedidos').datagrid('fixDetailRowHeight', index);
@@ -127,8 +132,8 @@ require 'templates/header.php';
     }
 
     function formatActionItemPedido(value, row) {
-        var btnModificar = `<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="abrirDialogModificacaoItem(${row.num_pedido}, ${row.num_seq_item})">Modificar</a>`;
-        var btnExcluir = `<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="excluirItemDoPedido(${row.num_pedido}, ${row.num_seq_item})">Excluir</a>`;
+        var btnModificar = `<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="abrirDialogModificacaoItem(${row.num_pedido}, ${row.num_seq_item})"></a>`;
+        var btnExcluir = `<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true" onclick="excluirItemDoPedido(${row.num_pedido}, ${row.num_seq_item})"></a>`;
         return btnModificar + ' ' + btnExcluir;
     }
 
