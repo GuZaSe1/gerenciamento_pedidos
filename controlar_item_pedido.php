@@ -1,10 +1,9 @@
 <?php
 require 'db.php';
 
-// --- LÓGICA DE PROCESSAMENTO (AJAX POST) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $response = ['success' => true, 'message' => ''];
-    
+
     $cod_item = $_POST['cod_item'] ?? '';
     $qtd_solicitada = $_POST['qtd_solicitada'] ?? '';
     $pre_unitario = $_POST['pre_unitario'] ?? '';
@@ -43,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-// --- LÓGICA DE EXIBIÇÃO (GET para carregar o form) ---
 $is_form_only = isset($_GET['form_only']);
 $num_pedido = $_GET['num_pedido'] ?? null;
 $num_seq_item = $_GET['num_seq_item'] ?? null;
@@ -82,7 +80,7 @@ if (!$is_form_only) {
 <form id="fm-item-pedido" method="post">
     <input type="hidden" name="num_pedido" value="<?= htmlspecialchars($num_pedido) ?>">
     <input type="hidden" name="num_seq_item" value="<?= htmlspecialchars($num_seq_item ?? '') ?>">
-    
+
     <div style="margin-bottom:20px; padding-top:10px;">
         <input class="easyui-combobox" name="cod_item" style="width:100%" data-options="
             label: 'Item:', labelWidth: 120, required: true,
