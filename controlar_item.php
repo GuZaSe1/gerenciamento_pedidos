@@ -1,7 +1,6 @@
 <?php
 require 'db.php';
 
-// --- LÓGICA DE PROCESSAMENTO (AJAX POST) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $response = ['success' => true, 'message' => ''];
 
@@ -20,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt_max = $pdo->query("SELECT MAX(cod_item) as max_id FROM item");
                 $max_id = $stmt_max->fetchColumn();
                 $novo_id = ($max_id ?? 0) + 1;
-                
+
                 $stmt = $pdo->prepare("INSERT INTO item (cod_item, den_item) VALUES (?, ?)");
                 $stmt->execute([$novo_id, $den_item]);
             }
@@ -35,7 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-// --- LÓGICA DE EXIBIÇÃO (GET para carregar o form no dialog) ---
 $is_form_only = isset($_GET['form_only']);
 $cod_item_get = $_GET['cod_item'] ?? null;
 $is_edit = $cod_item_get !== null;
