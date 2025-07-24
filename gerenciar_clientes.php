@@ -8,12 +8,14 @@ require 'templates/header.php';
 
     <?php if (isset($_SESSION['success_message'])): ?>
         <div class="easyui-panel" title="Sucesso" style="padding:10px;margin-bottom:10px;border-color:green;color:green;">
-            <?= htmlspecialchars($_SESSION['success_message']); unset($_SESSION['success_message']); ?>
+            <?= htmlspecialchars($_SESSION['success_message']);
+            unset($_SESSION['success_message']); ?>
         </div>
     <?php endif; ?>
     <?php if (isset($_SESSION['error_message'])): ?>
         <div class="easyui-panel" title="Erro" style="padding:10px;margin-bottom:10px;border-color:red;color:red;">
-            <?= htmlspecialchars($_SESSION['error_message']); unset($_SESSION['error_message']); ?>
+            <?= htmlspecialchars($_SESSION['error_message']);
+            unset($_SESSION['error_message']); ?>
         </div>
     <?php endif; ?>
 
@@ -37,8 +39,13 @@ require 'templates/header.php';
 
 <script>
     $(document).ready(function() {
+        console.log('entrou');
+
         $('#dg_clientes').datagrid({
-            url: 'listar_clientes_json.php',
+            url: 'listar_dados_json.php',
+            queryParams: {
+                tipo: 'clientes'
+            },
             method: 'post',
             pagination: true,
             fitColumns: true,
@@ -47,21 +54,41 @@ require 'templates/header.php';
             pageSize: 10,
             pageList: [10, 20, 50],
 
-            // Definição das colunas que estavam no <thead>
-            columns: [[
-                { field: 'cod_cliente', title: 'Código', width: 80, align: 'center' },
-                { field: 'nom_cliente', title: 'Nome do Cliente', width: 300 },
-                { field: 'action', title: 'Ações', width: 150, align: 'center', formatter: formatActionCliente }
-            ]],
-            
+            columns: [
+                [{
+                        field: 'cod_cliente',
+                        title: 'Código',
+                        width: 80,
+                        align: 'center'
+                    },
+                    {
+                        field: 'nom_cliente',
+                        title: 'Nome do Cliente',
+                        width: 300
+                    },
+                    {
+                        field: 'action',
+                        title: 'Ações',
+                        width: 150,
+                        align: 'center',
+                        formatter: formatActionCliente
+                    }
+                ]
+            ],
+
             // Callback executado após o carregamento dos dados
             onLoadSuccess: function() {
                 // Renderiza os botões de ação (Modificar/Excluir) dentro do datagrid
                 $('#dg_clientes').datagrid('getPanel').find('.easyui-linkbutton').linkbutton();
+            },
+            rowStyler: function(index, row) {
+                if (index % 2 == 1) {
+                    return 'background-color:rgb(243, 243, 243);';
+                }
             }
         });
     });
-    
+
     function abrirDialogInclusao() {
         $('#dlg').dialog('open').dialog('setTitle', 'Incluir Novo Cliente');
         $('#dlg').load('controlar_cliente.php?form_only=1', function() {
@@ -111,7 +138,9 @@ require 'templates/header.php';
                 $.ajax({
                     url: 'excluir_cliente.php',
                     type: 'post',
-                    data: { cod_cliente: cod_cliente },
+                    data: {
+                        cod_cliente: cod_cliente
+                    },
                     dataType: 'json',
                     success: function(result) {
                         if (result.success) {
