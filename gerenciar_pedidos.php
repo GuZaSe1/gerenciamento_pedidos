@@ -7,7 +7,7 @@ require 'templates/header.php';
 
 <div class="main-container" style="max-width: 1200px; margin: auto;">
     <div class="easyui-panel" title="Gerenciamento de Pedidos" style="padding:10px;">
-        
+
         <div style="margin-bottom:10px;">
             <a href="javascript:void(0)" onclick="abrirDialogInclusaoPedido()" class="easyui-linkbutton" data-options="iconCls:'icon-add'">Incluir Pedido</a>
             <a href="gerenciar_clientes.php" class="easyui-linkbutton" data-options="iconCls:'icon-man'">Gerenciar Clientes</a>
@@ -33,10 +33,12 @@ require 'templates/header.php';
 
 
 <script type="text/javascript">
-    
     $(document).ready(function() {
         $('#dg_pedidos').datagrid({
-            url: 'listar_pedidos_json.php',
+            url: 'listar_dados_json.php',
+            queryParams: {
+                tipo: 'pedidos'
+            },
             method: 'post',
             pagination: true,
             fitColumns: true,
@@ -44,14 +46,36 @@ require 'templates/header.php';
             rownumbers: true,
             pageSize: 10,
             pageList: [10, 30, 50],
-            
+
             // Definição das Colunas
-            columns: [[
-                { field: 'num_pedido', title: 'Nº Pedido', width: 80, align: 'center' },
-                { field: 'nom_cliente', title: 'Cliente', width: 250 },
-                { field: 'vlr_total', title: 'Valor Total', width: 120, align: 'right', formatter: formatCurrency },
-                { field: 'action', title: 'Ações', width: 150, align: 'center', formatter: formatActionPedido }
-            ]],
+            columns: [
+                [{
+                        field: 'num_pedido',
+                        title: 'Nº Pedido',
+                        width: 80,
+                        align: 'center'
+                    },
+                    {
+                        field: 'nom_cliente',
+                        title: 'Cliente',
+                        width: 250
+                    },
+                    {
+                        field: 'vlr_total',
+                        title: 'Valor Total',
+                        width: 120,
+                        align: 'right',
+                        formatter: formatCurrency
+                    },
+                    {
+                        field: 'action',
+                        title: 'Ações',
+                        width: 150,
+                        align: 'center',
+                        formatter: formatActionPedido
+                    }
+                ]
+            ],
 
             // Configuração da Detail View para mostrar os itens
             view: detailview,
@@ -78,13 +102,41 @@ require 'templates/header.php';
                     rownumbers: true,
                     loadMsg: '',
                     height: 'auto',
-                    columns: [[
-                        { field: 'den_item', title: 'Item', width: 200 },
-                        { field: 'qtd_solicitada', title: 'Qtd.', width: 50, align: 'center' },
-                        { field: 'pre_unitario', title: 'Preço Unit.', width: 100, align: 'right', formatter: formatCurrency },
-                        { field: 'total_item', title: 'Total Item', width: 100, align: 'right', formatter: formatCurrency },
-                        { field: 'action', title: 'Ações', width: 120, align: 'center', formatter: formatActionItemPedido }
-                    ]],
+                    columns: [
+                        [{
+                                field: 'den_item',
+                                title: 'Item',
+                                width: 200
+                            },
+                            {
+                                field: 'qtd_solicitada',
+                                title: 'Qtd.',
+                                width: 50,
+                                align: 'center'
+                            },
+                            {
+                                field: 'pre_unitario',
+                                title: 'Preço Unit.',
+                                width: 100,
+                                align: 'right',
+                                formatter: formatCurrency
+                            },
+                            {
+                                field: 'total_item',
+                                title: 'Total Item',
+                                width: 100,
+                                align: 'right',
+                                formatter: formatCurrency
+                            },
+                            {
+                                field: 'action',
+                                title: 'Ações',
+                                width: 120,
+                                align: 'center',
+                                formatter: formatActionItemPedido
+                            }
+                        ]
+                    ],
                     onResize: function() {
                         $('#dg_pedidos').datagrid('fixDetailRowHeight', index);
                     },
@@ -95,8 +147,8 @@ require 'templates/header.php';
                             ddv.datagrid('getPanel').find('.easyui-linkbutton').linkbutton();
                         }, 0);
                     },
-                    rowStyler: function(index, row){
-                        if (index % 2 == 1){
+                    rowStyler: function(index, row) {
+                        if (index % 2 == 1) {
                             return 'background-color:rgb(243, 243, 243);';
                         }
                     }
@@ -110,14 +162,19 @@ require 'templates/header.php';
                 $('#dg_pedidos').datagrid('getPanel').find('.easyui-linkbutton').linkbutton();
             },
             onLoadError: function(jqXHR) {
+                console.log('jqXHR')
+                console.log(jqXHR)
                 try {
                     var response = JSON.parse(jqXHR.responseText);
+                    console.log(response)
                     if (response && response.error) {
                         $.messager.alert('Erro no Servidor', response.error, 'error');
                     } else {
                         $.messager.alert('Erro ao Carregar Dados', 'Falha na comunicação com o servidor.', 'error');
                     }
                 } catch (e) {
+                    console.log('e')
+                    console.log(e)
                     $.messager.alert('Erro Crítico', 'Não foi possível interpretar a resposta do servidor.', 'error');
                 }
             }
@@ -141,7 +198,10 @@ require 'templates/header.php';
         if (value === null || value === undefined) return '';
         var val = parseFloat(value);
         if (isNaN(val)) return '';
-        return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        return val.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        });
     }
 
     // --- Funções de Diálogo e CRUD para Pedidos ---
@@ -158,14 +218,19 @@ require 'templates/header.php';
     function salvarPedido() {
         $('#fm-pedido').form('submit', {
             url: 'controlar_pedido.php',
-            onSubmit: function() { return $(this).form('validate'); },
+            onSubmit: function() {
+                return $(this).form('validate');
+            },
             success: function(result) {
                 try {
                     var res = JSON.parse(result);
                     if (res.success) {
                         $('#dlg-pedido').dialog('close');
                         $('#dg_pedidos').datagrid('reload');
-                        $.messager.show({ title: 'Sucesso', msg: 'Pedido salvo com sucesso.' });
+                        $.messager.show({
+                            title: 'Sucesso',
+                            msg: 'Pedido salvo com sucesso.'
+                        });
                     } else {
                         $.messager.alert('Erro', res.message || 'Ocorreu um erro ao salvar.', 'error');
                     }
@@ -179,10 +244,15 @@ require 'templates/header.php';
     function excluirPedido(num_pedido) {
         $.messager.confirm('Confirmar Exclusão', 'Tem certeza que deseja excluir este pedido e todos os seus itens?', function(r) {
             if (r) {
-                $.post('excluir_pedido.php', { num_pedido: num_pedido }, function(result) {
+                $.post('excluir_pedido.php', {
+                    num_pedido: num_pedido
+                }, function(result) {
                     if (result.success) {
                         $('#dg_pedidos').datagrid('reload');
-                        $.messager.show({ title: 'Sucesso', msg: 'Pedido excluído.' });
+                        $.messager.show({
+                            title: 'Sucesso',
+                            msg: 'Pedido excluído.'
+                        });
                     } else {
                         $.messager.alert('Erro', result.message, 'error');
                     }
@@ -213,7 +283,9 @@ require 'templates/header.php';
     function salvarItemPedido() {
         $('#fm-item-pedido').form('submit', {
             url: 'controlar_item_pedido.php',
-            onSubmit: function() { return $(this).form('validate'); },
+            onSubmit: function() {
+                return $(this).form('validate');
+            },
             success: function(result) {
                 try {
                     var res = JSON.parse(result);
@@ -233,7 +305,10 @@ require 'templates/header.php';
     function excluirItemDoPedido(num_pedido, num_seq_item) {
         $.messager.confirm('Confirmar Exclusão', 'Tem certeza que deseja excluir este item do pedido?', function(r) {
             if (r) {
-                $.post('excluir_item_pedido.php', { num_pedido: num_pedido, num_seq_item: num_seq_item }, function(result) {
+                $.post('excluir_item_pedido.php', {
+                    num_pedido: num_pedido,
+                    num_seq_item: num_seq_item
+                }, function(result) {
                     if (result.success) {
                         $('#dg_pedidos').datagrid('reload');
                     } else {
