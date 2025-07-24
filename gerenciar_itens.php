@@ -11,17 +11,7 @@ require 'templates/header.php';
             <a href="gerenciar_pedidos.php" class="easyui-linkbutton" data-options="iconCls:'icon-undo'">Voltar para Pedidos</a>
         </div>
 
-        <table id="dg_itens" class="easyui-datagrid" style="width:100%; height:400px"
-            data-options="url:'listar_itens_json.php', method:'post', pagination:true, fitColumns:true, singleSelect:true, pageSize:10, pageList:[10,20,50],
-               onLoadSuccess: function() { $('.easyui-linkbutton').linkbutton(); }">
-            <thead>
-                <tr>
-                    <th data-options="field:'cod_item',width:80">Código</th>
-                    <th data-options="field:'den_item',width:300">Descrição do Item</th>
-                    <th data-options="field:'action',width:150,align:'center',formatter:formatActionItem">Ações</th>
-                </tr>
-            </thead>
-        </table>
+        <table id="dg_itens" style="width:100%; height:400px"></table>
     </div>
 </div>
 
@@ -34,6 +24,56 @@ require 'templates/header.php';
 </div>
 
 <script>
+    $(document).ready(function() {
+        $('#dg_itens').datagrid({
+            url: 'listar_dados_json.php',
+            queryParams: {
+                tipo: 'itens'
+            },
+            method: 'post',
+            pagination: true,
+            fitColumns: true,
+            singleSelect: true,
+            pageSize: 10,
+            pageList: [10, 20, 50],
+
+            columns: [
+                [{
+                        field: 'cod_item',
+                        title: 'Código',
+                        width: 80,
+                        align: 'center'
+                    },
+                    {
+                        field: 'den_item',
+                        title: 'Descrição do Item',
+                        width: 300
+                    },
+                    {
+                        field: 'action',
+                        title: 'Ações',
+                        width: 150,
+                        align: 'center',
+                        formatter: formatActionItem
+                    }
+                ]
+            ],
+
+            // Callback executado após o carregamento dos dados
+            onLoadSuccess: function() {
+                // Renderiza os botões de ação (Modificar/Excluir) dentro do datagrid
+                $('#dg_itens').datagrid('getPanel').find('.easyui-linkbutton').linkbutton();
+            },
+            rowStyler: function(index, row) {
+                if (index % 2 == 1) {
+                    return 'background-color:rgb(243, 243, 243);';
+                }
+            }
+        });
+    });
+
+    // --- Funções Auxiliares ---
+
     function abrirDialogInclusaoItem() {
         $('#dlg-item').dialog('open').dialog('setTitle', 'Incluir Novo Item');
         $('#dlg-item').load('controlar_item.php?form_only=1', function() {
