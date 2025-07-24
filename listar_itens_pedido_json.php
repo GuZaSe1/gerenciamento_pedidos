@@ -11,9 +11,8 @@ $num_pedido = intval($_GET['num_pedido']);
 $response = ['total' => 0, 'rows' => []];
 
 try {
-    $sql = "
-        SELECT
-            ip.num_pedido, -- <-- AQUI ESTÁ A CORREÇÃO! ADICIONAMOS ESTA LINHA.
+    $sql = "SELECT
+            ip.num_pedido, 
             ip.num_seq_item,
             i.den_item,
             ip.qtd_solicitada,
