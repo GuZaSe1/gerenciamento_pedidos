@@ -1,9 +1,9 @@
 <?php
-$host = 'localhost';
-$db   = 'teste';
-$user = 'root';
-$pass = '12simple36';
-$charset = 'utf8mb4';
+$host = '';
+$db   = '';
+$user = '';
+$pass = '';
+$charset = '';
 
 // Data Source Name (DSN) - Define a conexão
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
@@ -18,4 +18,5 @@ try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
     die("Erro de conexão" . $e->getMessage());
+
 }
